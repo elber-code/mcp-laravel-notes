@@ -401,5 +401,8 @@
     "Edit Key Note": "Editar Nota con Clave",
     "Delete Key Note": "Eliminar Nota con Clave",
     "Key (Unique String)": "Clave (Texto Único)",
-    "Are you sure you would like to delete this key note? This action cannot be undone.": "¿Estás seguro de que deseas eliminar esta nota con clave? Esta acción no se puede deshacer."
+    "Are you sure you would like to delete this key note? This action cannot be undone.": "¿Estás seguro de que deseas eliminar esta nota con clave? Esta acción no se puede deshacer.",
+    "Preview Note": "Vista Previa de Nota",
+    "Preview Key Note": "Vista Previa de Nota con Clave",
+    "Show MD": "Ver MD"
 }

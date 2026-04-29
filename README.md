@@ -106,19 +106,17 @@ If your AI client uses a configuration file (like `claude_desktop_config.json`),
       "command": "npx",
       "args": [
         "-y",
-        "@smithery/cli",
-        "run",
-        "proxy",
-        "--url",
+        "supergateway",
+        "--streamableHttp",
         "http://127.0.0.1:8000/api/mcp/notes",
         "--header",
-        "Authorization=Bearer <your_token>"
+        "Authorization: Bearer <your_token>"
       ]
     }
   }
 }
 ```
-*(Note: Since this is an HTTP API protected by Sanctum, using a proxy adapter like Smithery is usually required for desktop clients that only support local command execution).*
+*(Note: Since this is an HTTP API protected by Sanctum, using a proxy adapter like `supergateway` is usually required for desktop clients that only support local command execution).*
 
 ## 🛠 Testing with Inspector
 

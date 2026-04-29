@@ -108,19 +108,17 @@ Si tu cliente de IA utiliza un archivo de configuración (como `claude_desktop_c
       "command": "npx",
       "args": [
         "-y",
-        "@smithery/cli",
-        "run",
-        "proxy",
-        "--url",
+        "supergateway",
+        "--streamableHttp",
         "http://127.0.0.1:8000/api/mcp/notes",
         "--header",
-        "Authorization=Bearer <tu_token>"
+        "Authorization: Bearer <tu_token>"
       ]
     }
   }
 }
 ```
-*(Nota: Dado que esta es una API HTTP protegida por Sanctum, generalmente se requiere usar un adaptador proxy como Smithery para los clientes de escritorio que solo admiten la ejecución de comandos locales).*
+*(Nota: Dado que esta es una API HTTP protegida por Sanctum, generalmente se requiere usar un adaptador proxy como `supergateway` para los clientes de escritorio que solo admiten la ejecución de comandos locales).*
 
 ## 🛠 Pruebas con el Inspector
 
