@@ -13,8 +13,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin user (idempotent)
+        $adminEmail = env('ADMIN_EMAIL', 'notas@example.com');
         $admin = User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => $adminEmail],
             [
                 'name' => 'Admin',
                 'password' => Hash::make('password'),

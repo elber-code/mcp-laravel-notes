@@ -64,9 +64,9 @@ Este token identifica automáticamente al usuario, garantizando que todas las no
    php artisan migrate:fresh --seed
    ```
 
-4. Genera un token MCP para el usuario sembrado (admin@example.com) para usarlo con tu agente de IA:
+4. Genera un token MCP para el usuario sembrado (notas@example.com, o tu ADMIN_EMAIL configurado en .env) para usarlo con tu agente de IA:
    ```bash
-   php artisan tinker --execute="echo App\Models\User::where('email','admin@example.com')->first()->createToken('mcp')->plainTextToken;"
+   php artisan tinker --execute="echo App\Models\User::where('email', env('ADMIN_EMAIL', 'notas@example.com'))->first()->createToken('mcp')->plainTextToken;"
    ```
 
 5. Inicia la aplicación:
