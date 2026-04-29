@@ -45,6 +45,13 @@ Authorization: Bearer <tu_token_sanctum>
 ```
 Este token identifica automáticamente al usuario, garantizando que todas las notas creadas y los datos recuperados pertenezcan estrictamente al usuario autenticado.
 
+## Documentación y Notas Técnicas
+
+Para decisiones de arquitectura, peculiaridades de Livewire 3 y resolución de problemas comunes (como el manejo de eventos en slots o modales), consulta la carpeta `docs/`:
+- [Notas Técnicas y Troubleshooting](docs/technical-notes.es.md)
+
+## Requisitos Previos e instala las dependencias:
+
 ## 🚀 Empezando
 
 1. Clona el repositorio e instala las dependencias:

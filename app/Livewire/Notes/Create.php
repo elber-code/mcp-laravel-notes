@@ -28,9 +28,11 @@ class Create extends Component
             'content' => 'required|string',
         ]);
 
+        $title = !empty($this->title) ? $this->title : now()->translatedFormat('d M Y, H:i');
+
         Note::create([
             'user_id' => Auth::id(),
-            'title' => $this->title,
+            'title' => $title,
             'content' => $this->content,
         ]);
 

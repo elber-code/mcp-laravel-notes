@@ -25,9 +25,11 @@ class CreateNoteTool extends Tool
             'content.required' => 'The note content is required.',
         ]);
 
+        $title = !empty($data['title']) ? $data['title'] : now()->translatedFormat('d M Y, H:i');
+
         $note = Note::create([
             'user_id' => $request->user()->id,
-            'title'   => $data['title'] ?? null,
+            'title'   => $title,
             'content' => $data['content'],
         ]);
 

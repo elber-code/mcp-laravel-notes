@@ -11,6 +11,11 @@
 
 This is a Laravel 11 application with Jetstream (Livewire) that serves as a personal notes system. It integrates a **Model Context Protocol (MCP)** server, allowing AI agents to interact with the user's notes securely via API.
 
+## Documentation & Technical Notes
+
+For architectural decisions, Livewire 3 quirks, and common troubleshooting (such as handling events inside slots and modals), please refer to the `docs/` folder:
+- [Technical Notes & Troubleshooting](docs/technical-notes.md)
+
 ## 🏗 Architecture
 
 The notes system is divided into two distinct concepts to keep data organized:
