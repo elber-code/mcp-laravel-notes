@@ -123,3 +123,26 @@ También puedes probar las herramientas MCP visualmente usando el Inspector MCP:
 npx @modelcontextprotocol/inspector
 ```
 *Nota: En el inspector, configura la URL como `http://127.0.0.1:8000/api/mcp/notes` y añade el header personalizado `Authorization` con tu token Bearer generado.*
+
+## 🎙️ Integración con Atajos de Mac (Grabar Notas de Voz)
+
+Puedes integrar fácilmente el endpoint `POST /api/notes` con la aplicación Atajos (Shortcuts) de macOS/iOS para crear un atajo llamado "Grabar Nota". Esto te permite dictar una nota y enviarla directamente a tu aplicación en segundo plano.
+
+> **Importante:** Para que este atajo funcione, debes generar un Token API desde la vista de tu perfil en la aplicación web (sección **API Tokens**) y asegurarte de marcar la casilla del permiso **`create`** (permisos de escritura).
+
+### Cómo crear el Atajo paso a paso:
+1. Abre la aplicación **Atajos** (Shortcuts) en tu Mac o iPhone y crea uno nuevo.
+2. Añade la acción **Dictar texto** (esto capturará tu voz y la convertirá a texto).
+3. Añade la acción **Obtener contenido de la URL**.
+   - **URL**: `http://127.0.0.1:8000/api/notes` (o tu dominio en producción).
+   - Haz clic en la flecha para "Mostrar más".
+   - **Método**: `POST`
+   - **Cabeceras (Headers)**:
+     - `Authorization`: `Bearer <TU_TOKEN>` *(Asegúrate de que el token generado en Jetstream tenga el permiso `create`)*.
+     - `Accept`: `application/json`
+   - **Cuerpo de la solicitud (Request Body)**: Selecciona `JSON`
+     - Añade un nuevo campo: `content` (Texto) -> asigna como valor la variable `Texto dictado` del paso 2.
+
+¡Listo! Ahora puedes usar el atajo desde el menú de tu Mac, con Siri, o con un atajo de teclado. Al hablar, tu nota se guardará automáticamente en el sistema y, como no envías un título, se le asignará la fecha actual por defecto.
+
+![Atajo de Mac para Grabar Nota](docs/imgs/mac-shortcut.png)

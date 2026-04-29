@@ -19,11 +19,13 @@ use Laravel\Mcp\Server\Attributes\Version;
 #[Name('Notes Server')]
 #[Version('2.0.0')]
 #[Instructions(
-    'MCP server for managing personal notes. ' .
-    'There are two types of notes: ' .
-    '1. Timeline Notes (no key, ordered by created_at). Tools: create-note, edit-note, get-recent-notes, get-month-notes. ' .
-    '2. Key Notes (unique string key, used for memory/preferences). Tools: create-key-note, edit-key-note, get-memory, get-last-key-notes. ' .
-    'Authentication is handled via Sanctum Bearer token.'
+    "MCP server for managing personal notes and maintaining an AI-driven memory. " .
+    "Workflow: The user frequently dictates raw, timestamped thoughts via mobile/Mac shortcuts into Timeline Notes. " .
+    "Your main task as an AI is to use 'get-recent-notes' to read these raw thoughts, synthesize them, " .
+    "and maintain an up-to-date, structured summary using 'edit-key-note' (or create-key-note) with the key 'memory'. " .
+    "Note Types: " .
+    "1. Timeline Notes (raw logs). Tools: create-note, edit-note, get-recent-notes, get-month-notes. " .
+    "2. Key Notes (structured data/memory). Tools: create-key-note, edit-key-note, get-memory, get-last-key-notes."
 )]
 class NotesServer extends Server
 {
@@ -33,13 +35,13 @@ class NotesServer extends Server
      * @var array<int, class-string<\Laravel\Mcp\Server\Tool>>
      */
     protected array $tools = [
-        // Timeline Notes
+            // Timeline Notes
         CreateNoteTool::class,
         EditNoteTool::class,
         GetRecentNotesTool::class,
         GetMonthNotesTool::class,
 
-        // Key Notes
+            // Key Notes
         CreateKeyNoteTool::class,
         EditKeyNoteTool::class,
         GetMemoryTool::class,

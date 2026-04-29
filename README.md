@@ -121,3 +121,26 @@ You can also test the MCP tools visually using the MCP Inspector:
 npx @modelcontextprotocol/inspector
 ```
 *Note: In the inspector, set the URL to `http://127.0.0.1:8000/api/mcp/notes` and add the custom `Authorization` header with your generated Bearer token.*
+
+## 🎙️ Mac Shortcuts Integration (Voice Notes)
+
+You can easily integrate the `POST /api/notes` endpoint with the Apple Shortcuts app on macOS/iOS to create a "Record Note" shortcut. This allows you to dictate a note and send it directly to your application in the background.
+
+> **Important:** For this shortcut to work, you must generate an API Token from your profile view in the web application (**API Tokens** section) and make sure to check the **`create`** permission box (write permissions).
+
+### How to build the Shortcut step-by-step:
+1. Open the **Shortcuts** app on your Mac or iPhone and create a new shortcut.
+2. Add the **Dictate Text** action (this will capture your voice and convert it to text).
+3. Add the **Get Contents of URL** action.
+   - **URL**: `http://127.0.0.1:8000/api/notes` (or your production domain).
+   - Click the arrow for "Show More".
+   - **Method**: `POST`
+   - **Headers**:
+     - `Authorization`: `Bearer <YOUR_TOKEN>` *(Make sure your Jetstream token has the `create` permission)*.
+     - `Accept`: `application/json`
+   - **Request Body**: Select `JSON`
+     - Add a new field: `content` (Text) -> assign the value to the `Dictated Text` variable from step 2.
+
+That's it! Now you can trigger this shortcut from your Mac menu bar, via Siri, or with a keyboard shortcut. When you speak, your note will be automatically saved, and since no title is provided, it will default to the current date and time.
+
+![Mac Shortcut to Record Note](docs/imgs/mac-shortcut.png)
