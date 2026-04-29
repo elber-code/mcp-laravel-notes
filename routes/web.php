@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\KeyNotes\Index as KeyNotesIndex;
+use App\Livewire\Notes\Index as NotesIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,4 +16,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/notes', NotesIndex::class)->name('notes.index');
+    Route::get('/key-notes', KeyNotesIndex::class)->name('key-notes.index');
 });
