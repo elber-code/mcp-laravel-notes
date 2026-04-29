@@ -2,24 +2,41 @@
 
 namespace Database\Seeders;
 
+use App\Models\Note;
+use App\Models\KeyNote;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Admin user (idempotent)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Clear to avoid duplicates
+        $admin->notes()->delete();
+        $admin->keyNotes()->delete();
+
+        // Create some normal notes
+        Note::factory()->count(10)->create(['user_id' => $admin->id]);
+
+        // Create some key notes
+        KeyNote::factory()->count(5)->create(['user_id' => $admin->id]);
+
+        // Create a special memory key note
+        KeyNote::create([
+            'user_id' => $admin->id,
+            'key' => 'memory',
+            'title' => 'Core Memory',
+            'content' => 'The assistant should remember the user\'s preferences.',
         ]);
     }
 }
