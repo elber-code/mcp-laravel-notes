@@ -66,10 +66,16 @@ Para decisiones de arquitectura, peculiaridades de Livewire 3 y resolución de p
    php artisan key:generate
    ```
 
-3. Ejecuta las migraciones y siembra la base de datos (esto creará un usuario administrador y notas de prueba):
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
+3. Ejecuta las migraciones y siembra la base de datos:
+   - **Para desarrollo (con notas de prueba generadas aleatoriamente):**
+     ```bash
+     php artisan migrate:fresh --seed
+     ```
+   - **Para producción (solo crea el usuario Admin y la nota clave `memory` en blanco):**
+     ```bash
+     php artisan migrate --force
+     php artisan db:seed --class=ProductionSeeder --force
+     ```
 
 4. Genera un token MCP para el usuario sembrado (notas@example.com, o tu ADMIN_EMAIL configurado en .env) para usarlo con tu agente de IA:
    ```bash

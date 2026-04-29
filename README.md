@@ -64,10 +64,16 @@ This token automatically identifies the user, ensuring that all created notes an
    php artisan key:generate
    ```
 
-3. Run migrations and seed the database (this will create an admin user and sample notes):
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
+3. Run migrations and seed the database:
+   - **For development (with random dummy notes):**
+     ```bash
+     php artisan migrate:fresh --seed
+     ```
+   - **For production (only creates Admin user and the blank `memory` key note):**
+     ```bash
+     php artisan migrate --force
+     php artisan db:seed --class=ProductionSeeder --force
+     ```
 
 4. Generate an MCP token for the seeded user (notas@example.com, or your custom ADMIN_EMAIL from .env) to use with your AI agent:
    ```bash
