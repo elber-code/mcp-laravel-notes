@@ -16,11 +16,13 @@ class Index extends Component
     public $search = '';
     public $dateFrom = '';
     public $dateTo = '';
+    public $selectedFilterTags = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
         'dateFrom' => ['except' => ''],
         'dateTo' => ['except' => ''],
+        'selectedFilterTags' => ['except' => []],
     ];
 
     public function updatingSearch()
@@ -35,6 +37,16 @@ class Index extends Component
 
     public function updatingDateTo()
     {
+        $this->resetPage();
+    }
+
+    public function toggleTagFilter($tag)
+    {
+        if (in_array($tag, $this->selectedFilterTags)) {
+            $this->selectedFilterTags = array_values(array_diff($this->selectedFilterTags, [$tag]));
+        } else {
+            $this->selectedFilterTags[] = $tag;
+        }
         $this->resetPage();
     }
 
@@ -66,10 +78,20 @@ class Index extends Component
             $query->whereDate('created_at', '<=', Carbon::parse($this->dateTo));
         }
 
+        if (!empty($this->selectedFilterTags)) {
+            $query->where(function ($q) {
+                foreach ($this->selectedFilterTags as $tag) {
+                    $q->orWhereJsonContains('tags', $tag);
+                }
+            });
+        }
+
         $notes = $query->latest()->paginate(9);
+        $allTags = \App\Models\Tag::where('user_id', Auth::id())->orderBy('name')->pluck('name')->toArray();
 
         return view('livewire.key-notes.index', [
-            'notes' => $notes
+            'notes' => $notes,
+            'allTags' => $allTags
         ])->layout('layouts.app');
     }
 }

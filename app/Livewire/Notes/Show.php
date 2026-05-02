@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 class Show extends Component
 {
     public $isOpen = false;
+    public $isFullscreen = false;
     public ?Note $note = null;
 
     #[On('open-show-note-modal')]
@@ -20,6 +21,7 @@ class Show extends Component
             return;
         }
         $this->note = $note;
+        $this->isFullscreen = false;
         $this->isOpen = true;
     }
 

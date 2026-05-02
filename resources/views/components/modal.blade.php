@@ -9,6 +9,7 @@ $maxWidth = [
     'lg' => 'sm:max-w-lg',
     'xl' => 'sm:max-w-xl',
     '2xl' => 'sm:max-w-2xl',
+    'full' => 'sm:max-w-[95vw]',
 ][$maxWidth ?? '2xl'];
 @endphp
 

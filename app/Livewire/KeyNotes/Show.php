@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 class Show extends Component
 {
     public $isOpen = false;
+    public $isFullscreen = false;
     public ?KeyNote $keyNote = null;
 
     #[On('open-show-key-note-modal')]
@@ -20,6 +21,7 @@ class Show extends Component
             return;
         }
         $this->keyNote = $keyNote;
+        $this->isFullscreen = false;
         $this->isOpen = true;
     }
 

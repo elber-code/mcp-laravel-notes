@@ -12,6 +12,13 @@
                     <x-input-error for="title" class="mt-2" />
                 </div>
 
+                <x-inputs.tags-selector 
+                    :selectedTags="$selectedTags" 
+                    :isAddingTag="$isAddingTag" 
+                    :tagSearch="$tagSearch" 
+                    :availableTags="$availableTags" 
+                />
+
                 <div>
                     <x-label for="content" value="{{ __('Content') }}" />
                     <textarea id="content" wire:model="content" rows="6" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"></textarea>

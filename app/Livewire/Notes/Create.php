@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
+use App\Livewire\Traits\HasTags;
+
 class Create extends Component
 {
+    use HasTags;
+
     public $isOpen = false;
     public $title = '';
     public $content = '';
@@ -16,7 +20,7 @@ class Create extends Component
     #[On('open-create-note-modal')]
     public function openModal()
     {
-        $this->reset(['title', 'content']);
+        $this->reset(['title', 'content', 'selectedTags', 'tagSearch', 'isAddingTag']);
         $this->resetValidation();
         $this->isOpen = true;
     }
@@ -30,10 +34,13 @@ class Create extends Component
 
         $title = !empty($this->title) ? $this->title : now()->translatedFormat('d M Y, H:i');
 
+        $this->syncTagsToDatabase();
+
         Note::create([
             'user_id' => Auth::id(),
             'title' => $title,
             'content' => $this->content,
+            'tags' => empty($this->selectedTags) ? null : $this->selectedTags,
         ]);
 
         $this->isOpen = false;
@@ -42,6 +49,8 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.notes.create');
+        return view('livewire.notes.create', [
+            'availableTags' => $this->getAvailableTags()
+        ]);
     }
 }

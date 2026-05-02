@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
+use App\Livewire\Traits\HasTags;
+
 class Edit extends Component
 {
+    use HasTags;
+
     public $isOpen = false;
     public ?Note $note = null;
     public $title = '';
@@ -24,6 +28,9 @@ class Edit extends Component
         $this->note = $note;
         $this->title = $note->title;
         $this->content = $note->content;
+        $this->selectedTags = is_array($note->tags) ? $note->tags : [];
+        $this->tagSearch = '';
+        $this->isAddingTag = false;
         $this->isOpen = true;
     }
 
@@ -34,9 +41,12 @@ class Edit extends Component
             'content' => 'required|string',
         ]);
 
+        $this->syncTagsToDatabase();
+
         $this->note->update([
             'title' => $this->title,
             'content' => $this->content,
+            'tags' => empty($this->selectedTags) ? null : $this->selectedTags,
         ]);
 
         $this->isOpen = false;
@@ -45,6 +55,8 @@ class Edit extends Component
 
     public function render()
     {
-        return view('livewire.notes.edit');
+        return view('livewire.notes.edit', [
+            'availableTags' => $this->getAvailableTags()
+        ]);
     }
 }

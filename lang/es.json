@@ -404,5 +404,10 @@
     "Are you sure you would like to delete this key note? This action cannot be undone.": "¿Estás seguro de que deseas eliminar esta nota con clave? Esta acción no se puede deshacer.",
     "Preview Note": "Vista Previa de Nota",
     "Preview Key Note": "Vista Previa de Nota con Clave",
-    "Show MD": "Ver MD"
+    "Show MD": "Ver MD",
+    "Filter by Tags": "Filtrar por Etiquetas",
+    "Type a tag...": "Escribe una etiqueta...",
+    "Create new": "Crear nueva",
+    "Shrink": "Reducir",
+    "Expand": "Agrandar"
 }

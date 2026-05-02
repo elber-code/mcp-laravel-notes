@@ -34,6 +34,21 @@
                             class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                     </div>
                 </div>
+                
+                <!-- Tag Filters -->
+                @if(count($allTags) > 0)
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Filter by Tags') }}</label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($allTags as $tag)
+                                <button type="button" wire:click="toggleTagFilter('{{ $tag }}')" 
+                                        class="px-3 py-1 rounded-full text-xs font-medium transition-colors border {{ in_array($tag, $selectedFilterTags) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50' }}">
+                                    {{ $tag }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <!-- Notes Grid -->
@@ -45,9 +60,18 @@
                             <h3 class="text-lg font-bold text-gray-900 mb-2 truncate">
                                 {{ $note->title ?? __('Untitled Note') }}
                             </h3>
-                            <p class="text-sm text-gray-500 mb-4">
+                            <p class="text-sm text-gray-500 mb-3">
                                 {{ $note->created_at->translatedFormat('d M Y, H:i') }}
                             </p>
+                            @if($note->tags && count($note->tags) > 0)
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    @foreach($note->tags as $tag)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                            #{{ $tag }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
                             <div class="text-gray-700 line-clamp-3 prose prose-sm max-w-none">
                                 {{ $note->content }}
                             </div>

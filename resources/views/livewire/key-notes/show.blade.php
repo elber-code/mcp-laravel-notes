@@ -1,11 +1,20 @@
 <div>
-    <x-dialog-modal wire:model.live="isOpen">
+    <x-dialog-modal wire:model.live="isOpen" :maxWidth="$isFullscreen ? 'full' : '2xl'">
         <x-slot name="title">
-            {{ __('Preview Key Note') }}: {{ $keyNote ? ($keyNote->key ?? __('Untitled')) : '' }}
+            <div class="flex justify-between items-center w-full">
+                <span>{{ __('Preview Key Note') }}: {{ $keyNote ? ($keyNote->key ?? __('Untitled')) : '' }}</span>
+                <button wire:click="$toggle('isFullscreen')" class="text-gray-400 hover:text-gray-600 focus:outline-none" title="{{ $isFullscreen ? __('Shrink') : __('Expand') }}">
+                    @if($isFullscreen)
+                        <x-svgs.shrink class="w-5 h-5" />
+                    @else
+                        <x-svgs.expand class="w-5 h-5" />
+                    @endif
+                </button>
+            </div>
         </x-slot>
 
         <x-slot name="content">
-            <div class="mt-4 p-6 bg-white rounded border border-gray-200 overflow-y-auto max-h-[60vh] prose prose-sm max-w-none prose-indigo">
+            <div class="mt-4 p-6 bg-white rounded border border-gray-200 overflow-y-auto {{ $isFullscreen ? 'max-h-[80vh]' : 'max-h-[60vh]' }} prose prose-sm max-w-none prose-indigo">
                 {!! $markdownContent !!}
             </div>
         </x-slot>

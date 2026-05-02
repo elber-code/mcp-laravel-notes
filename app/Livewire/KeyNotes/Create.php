@@ -8,8 +8,12 @@ use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
+use App\Livewire\Traits\HasTags;
+
 class Create extends Component
 {
+    use HasTags;
+
     public $isOpen = false;
     public $key = '';
     public $title = '';
@@ -18,7 +22,7 @@ class Create extends Component
     #[On('open-create-keynote-modal')]
     public function openModal()
     {
-        $this->reset(['key', 'title', 'content']);
+        $this->reset(['key', 'title', 'content', 'selectedTags', 'tagSearch', 'isAddingTag']);
         $this->resetValidation();
         $this->isOpen = true;
     }
@@ -36,11 +40,14 @@ class Create extends Component
             'content' => 'required|string',
         ]);
 
+        $this->syncTagsToDatabase();
+
         KeyNote::create([
             'user_id' => Auth::id(),
             'key' => $this->key,
             'title' => $this->title,
             'content' => $this->content,
+            'tags' => empty($this->selectedTags) ? null : $this->selectedTags,
         ]);
 
         $this->isOpen = false;
@@ -49,6 +56,8 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.key-notes.create');
+        return view('livewire.key-notes.create', [
+            'availableTags' => $this->getAvailableTags()
+        ]);
     }
 }

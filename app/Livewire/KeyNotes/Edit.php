@@ -8,8 +8,12 @@ use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
+use App\Livewire\Traits\HasTags;
+
 class Edit extends Component
 {
+    use HasTags;
+
     public $isOpen = false;
     public ?KeyNote $note = null;
     public $key = '';
@@ -27,6 +31,9 @@ class Edit extends Component
         $this->key = $note->key;
         $this->title = $note->title;
         $this->content = $note->content;
+        $this->selectedTags = is_array($note->tags) ? $note->tags : [];
+        $this->tagSearch = '';
+        $this->isAddingTag = false;
         $this->isOpen = true;
     }
 
@@ -43,10 +50,13 @@ class Edit extends Component
             'content' => 'required|string',
         ]);
 
+        $this->syncTagsToDatabase();
+
         $this->note->update([
             'key' => $this->key,
             'title' => $this->title,
             'content' => $this->content,
+            'tags' => empty($this->selectedTags) ? null : $this->selectedTags,
         ]);
 
         $this->isOpen = false;
@@ -55,6 +65,8 @@ class Edit extends Component
 
     public function render()
     {
-        return view('livewire.key-notes.edit');
+        return view('livewire.key-notes.edit', [
+            'availableTags' => $this->getAvailableTags()
+        ]);
     }
 }
