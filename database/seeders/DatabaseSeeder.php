@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
         $admin->notes()->delete();
         $admin->keyNotes()->delete();
 
+        // Create some tags
+        \App\Models\Tag::factory()->count(10)->create(['user_id' => $admin->id]);
+
         // Create some normal notes
         Note::factory()->count(10)->create(['user_id' => $admin->id]);
 

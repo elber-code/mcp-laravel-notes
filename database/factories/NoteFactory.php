@@ -17,6 +17,7 @@ class NoteFactory extends Factory
         return [
             'title'   => fake()->sentence(rand(3, 8)),
             'content' => fake()->paragraphs(rand(2, 5), true),
+            'tags'    => fake()->boolean(70) ? fake()->randomElements(['work', 'personal', 'ideas', 'todo', 'urgent'], rand(1, 3)) : null,
             'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }

@@ -19,6 +19,7 @@ class KeyNoteFactory extends Factory
             'key'     => Str::slug(fake()->unique()->words(rand(2, 4), true)),
             'title'   => fake()->sentence(rand(3, 8)),
             'content' => fake()->paragraphs(rand(2, 5), true),
+            'tags'    => fake()->boolean(50) ? fake()->randomElements(['config', 'system', 'memory', 'archived'], rand(1, 2)) : null,
         ];
     }
 }

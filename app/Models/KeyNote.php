@@ -15,6 +15,11 @@ class KeyNote extends Model
         'key',
         'title',
         'content',
+        'tags',
+    ];
+
+    protected $casts = [
+        'tags' => 'array',
     ];
 
     public function user(): BelongsTo
