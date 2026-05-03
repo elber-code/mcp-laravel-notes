@@ -11,7 +11,7 @@ use Laravel\Mcp\Server\Tool;
 
 #[Description(
     'Creates a new key note. Key notes are identified by a unique string key. ' .
-    'Useful for storing specific pieces of information like memory, preferences, or settings.'
+    'Use tags to categorize specialized information.'
 )]
 class CreateKeyNoteTool extends Tool
 {

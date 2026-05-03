@@ -11,7 +11,7 @@ use Laravel\Mcp\Server\Tool;
 
 #[Description(
     'Edits an existing timeline note using its numerical ID. ' .
-    'Only the owner can edit their note.'
+    'You can update the title, content, and tags.'
 )]
 class EditNoteTool extends Tool
 {

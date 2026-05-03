@@ -59,3 +59,22 @@ Always explicitly add `type="button"` to any button whose sole purpose is execut
 <!-- Correct -->
 <button type="button" x-on:click="open()">Open</button>
 ```
+
+## 3. Tagging System & JSON Arrays
+
+### Data Storage
+Tags are stored as a JSON array in the `tags` column of both `notes` and `key_notes` tables. In the Eloquent models, these are cast to `array`:
+```php
+protected $casts = [
+    'tags' => 'array',
+];
+```
+
+### Consistency & Synchronization
+We use a separate `tags` table to store a global catalog of tags per user. This ensures that:
+1. Users can see a list of all their tags for filtering.
+2. The AI assistant can query existing tags via the `get-all-tags` tool.
+3. Tags are normalized (lowercase and trimmed) before being saved.
+
+### Livewire Trait
+The logic for adding, removing, and suggesting tags is centralized in `App\Livewire\Traits\HasTags.php`. This allows both standard and key notes to share the exact same UI behavior and backend logic.

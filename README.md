@@ -25,20 +25,35 @@ Standard notes that represent chronological entries, like a daily journal or seq
 - **Fields:** `title` (optional), `content`, `created_at`.
 - **Querying:** Based on creation date (`created_at`).
 - **MCP Tools:**
-  - `create-note`: Creates a new timeline note.
-  - `edit-note`: Edits a note using its numerical `id`.
+  - `create-note`: Creates a new timeline note. Supports optional `tags` array.
+  - `edit-note`: Edits a note using its numerical `id`. Supports optional `tags` array.
   - `get-recent-notes`: Returns notes from the last X days.
   - `get-month-notes`: Returns notes created in a specific month.
+  - `get-all-tags`: Returns a list of all unique tags used in the system.
+
 
 ### 2. Key Notes (`KeyNote` model)
 Specialized notes identified by a unique string key. Useful for storing preferences, assistant memory, or settings.
 - **Fields:** `key` (unique per user), `title` (optional), `content`, `created_at`.
 - **Querying:** Based on the string `key` or by latest created.
 - **MCP Tools:**
-  - `create-key-note`: Creates a new note with a specific `key`.
-  - `edit-key-note`: Edits an existing note referencing its `key`.
+  - `create-key-note`: Creates a new note with a specific `key`. Supports optional `tags` array.
+  - `edit-key-note`: Edits an existing note referencing its `key`. Supports optional `tags` array.
   - `get-memory`: Shortcut tool to fetch the note with the key `'memory'`.
   - `get-last-key-notes`: Retrieves the latest X key notes created.
+
+### 🏷️ Tagging System
+Both note types support a tagging system. Tags are stored as a JSON array in the database and are automatically indexed for searching.
+- **Filtering:** You can filter notes by selecting multiple tags on the main dashboard.
+- **Persistence:** Tags are synchronized globally. Adding a new tag to a note automatically adds it to your user's tag library.
+- **API Support:** Create and edit notes via API/MCP while passing an array of tags.
+
+### 🔍 Markdown Preview & Full Screen
+The application features a powerful Markdown previewer for notes.
+- **Agrandar (Expand):** Every note preview can be toggled to a full-screen mode for focused reading and better visibility of long content.
+- **Modern UI:** Uses `prose` classes for beautiful typography and dark mode compatibility.
+
+
 
 ## 🔐 Authentication
 

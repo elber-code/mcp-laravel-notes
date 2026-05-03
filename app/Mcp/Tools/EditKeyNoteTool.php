@@ -11,7 +11,7 @@ use Laravel\Mcp\Server\Tool;
 
 #[Description(
     'Edits an existing key note using its unique string key as reference. ' .
-    'Useful for updating stored information like memory or preferences.'
+    'Allows updating title, content, and categorization tags.'
 )]
 class EditKeyNoteTool extends Tool
 {

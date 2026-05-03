@@ -12,7 +12,7 @@ use Laravel\Mcp\Server\Tool;
 #[Description(
     'Creates a new timeline note. ' .
     'Useful for daily journals or sequential logs. ' .
-    'The note is automatically associated with the authenticated user.'
+    'Include relevant tags to categorize entries and keep your workspace organized.'
 )]
 class CreateNoteTool extends Tool
 {

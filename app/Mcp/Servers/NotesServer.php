@@ -27,7 +27,7 @@ use Laravel\Mcp\Server\Attributes\Version;
     "Note Types: " .
     "1. Timeline Notes (raw logs). Tools: create-note, edit-note, get-recent-notes, get-month-notes. " .
     "2. Key Notes (structured data/memory). Tools: create-key-note, edit-key-note, get-memory, get-last-key-notes. " .
-    "Tags: Both note types support an optional 'tags' array to categorize information."
+    "Organization (Tags): Use the 'tags' array to categorize notes. Always call 'get-all-tags' first to reuse existing categories and maintain a clean tag library."
 )]
 class NotesServer extends Server
 {
