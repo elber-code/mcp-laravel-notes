@@ -21,6 +21,7 @@ class CreateKeyNoteTool extends Tool
             'key'     => 'required|string',
             'title'   => 'nullable|string',
             'content' => 'required|string',
+            'tags'    => 'nullable|array',
         ]);
 
         $userId = $request->user()->id;
@@ -29,11 +30,26 @@ class CreateKeyNoteTool extends Tool
             return Response::error("A key note with key \"{$data['key']}\" already exists.");
         }
 
+        $tags = collect($data['tags'] ?? [])
+            ->map(fn($t) => trim(strtolower($t)))
+            ->filter()
+            ->values()
+            ->toArray();
+
+        // Sync tags
+        foreach ($tags as $tagName) {
+            \App\Models\Tag::firstOrCreate([
+                'user_id' => $userId,
+                'name'    => $tagName
+            ]);
+        }
+
         $note = KeyNote::create([
             'user_id' => $userId,
             'key'     => $data['key'],
             'title'   => $data['title'] ?? null,
             'content' => $data['content'],
+            'tags'    => $tags,
         ]);
 
         return Response::text(json_encode([
@@ -58,6 +74,10 @@ class CreateKeyNoteTool extends Tool
             'content' => $schema->string()
                 ->description('Content of the note.')
                 ->required(),
+
+            'tags' => $schema->array()
+                ->items($schema->string())
+                ->description('Optional array of tags.'),
         ];
     }
 }

@@ -21,16 +21,32 @@ class CreateNoteTool extends Tool
         $data = $request->validate([
             'title'   => 'nullable|string',
             'content' => 'required|string',
+            'tags'    => 'nullable|array',
         ], [
             'content.required' => 'The note content is required.',
         ]);
 
         $title = !empty($data['title']) ? $data['title'] : now()->translatedFormat('d M Y, H:i');
 
+        $tags = collect($data['tags'] ?? [])
+            ->map(fn($t) => trim(strtolower($t)))
+            ->filter()
+            ->values()
+            ->toArray();
+
+        // Sync tags
+        foreach ($tags as $tagName) {
+            \App\Models\Tag::firstOrCreate([
+                'user_id' => $request->user()->id,
+                'name'    => $tagName
+            ]);
+        }
+
         $note = Note::create([
             'user_id' => $request->user()->id,
             'title'   => $title,
             'content' => $data['content'],
+            'tags'    => $tags,
         ]);
 
         return Response::text(json_encode([
@@ -50,6 +66,10 @@ class CreateNoteTool extends Tool
             'content' => $schema->string()
                 ->description('Main content of the note.')
                 ->required(),
+
+            'tags' => $schema->array()
+                ->items($schema->string())
+                ->description('Optional array of tags to categorize the note.'),
         ];
     }
 }

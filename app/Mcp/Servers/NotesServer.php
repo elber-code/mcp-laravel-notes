@@ -11,6 +11,7 @@ use App\Mcp\Tools\GetLastKeyNotesTool;
 use App\Mcp\Tools\GetMemoryTool;
 use App\Mcp\Tools\GetMonthNotesTool;
 use App\Mcp\Tools\GetRecentNotesTool;
+use App\Mcp\Tools\GetAllTagsTool;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
@@ -25,7 +26,8 @@ use Laravel\Mcp\Server\Attributes\Version;
     "and maintain an up-to-date, structured summary using 'edit-key-note' (or create-key-note) with the key 'memory'. " .
     "Note Types: " .
     "1. Timeline Notes (raw logs). Tools: create-note, edit-note, get-recent-notes, get-month-notes. " .
-    "2. Key Notes (structured data/memory). Tools: create-key-note, edit-key-note, get-memory, get-last-key-notes."
+    "2. Key Notes (structured data/memory). Tools: create-key-note, edit-key-note, get-memory, get-last-key-notes. " .
+    "Tags: Both note types support an optional 'tags' array to categorize information."
 )]
 class NotesServer extends Server
 {
@@ -40,6 +42,7 @@ class NotesServer extends Server
         EditNoteTool::class,
         GetRecentNotesTool::class,
         GetMonthNotesTool::class,
+        GetAllTagsTool::class,
 
             // Key Notes
         CreateKeyNoteTool::class,

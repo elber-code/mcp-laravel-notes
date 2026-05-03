@@ -12,20 +12,37 @@ Mcp::web('/mcp/notes', NotesServer::class)
 // API endpoint for creating notes programmatically
 Route::post('/notes', function (Request $request) {
     // Requires Jetstream 'create' permission
-    if (! $request->user()->tokenCan('create')) {
+    if (!$request->user()->tokenCan('create')) {
         abort(403, 'This token does not have create permissions.');
     }
 
     $request->validate([
         'title' => 'nullable|string|max:255',
         'content' => 'required|string',
+        'tags' => 'nullable|array',
+        'tags.*' => 'string|max:50',
     ]);
 
     $title = $request->input('title') ?: now()->translatedFormat('d M Y, H:i');
 
+    $tags = collect($request->input('tags', []))
+        ->map(fn($t) => trim(strtolower($t)))
+        ->filter()
+        ->values()
+        ->toArray();
+
+    // Sync tags to tags table
+    foreach ($tags as $tagName) {
+        \App\Models\Tag::firstOrCreate([
+            'user_id' => $request->user()->id,
+            'name' => $tagName
+        ]);
+    }
+
     $note = $request->user()->notes()->create([
         'title' => $title,
         'content' => $request->input('content'),
+        'tags' => $tags,
     ]);
 
     return response()->json($note, 201);

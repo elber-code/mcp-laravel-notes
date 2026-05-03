@@ -21,6 +21,7 @@ class EditNoteTool extends Tool
             'id'      => 'required|integer',
             'title'   => 'nullable|string',
             'content' => 'required|string',
+            'tags'    => 'nullable|array',
         ]);
 
         $note = Note::where('user_id', $request->user()->id)
@@ -31,10 +32,29 @@ class EditNoteTool extends Tool
             return Response::error("Note with ID {$data['id']} not found or access denied.");
         }
 
-        $note->update([
+        $updateData = [
             'title'   => array_key_exists('title', $data) ? $data['title'] : $note->title,
             'content' => $data['content'],
-        ]);
+        ];
+
+        if (array_key_exists('tags', $data)) {
+            $tags = collect($data['tags'] ?? [])
+                ->map(fn($t) => trim(strtolower($t)))
+                ->filter()
+                ->values()
+                ->toArray();
+
+            // Sync tags
+            foreach ($tags as $tagName) {
+                \App\Models\Tag::firstOrCreate([
+                    'user_id' => $request->user()->id,
+                    'name'    => $tagName
+                ]);
+            }
+            $updateData['tags'] = $tags;
+        }
+
+        $note->update($updateData);
 
         return Response::text(json_encode([
             'id'         => $note->id,
@@ -57,6 +77,10 @@ class EditNoteTool extends Tool
             'content' => $schema->string()
                 ->description('New content for the note.')
                 ->required(),
+
+            'tags' => $schema->array()
+                ->items($schema->string())
+                ->description('New array of tags (optional).'),
         ];
     }
 }
