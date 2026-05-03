@@ -19,14 +19,24 @@ class GetLastKeyNotesTool extends Tool
     {
         $data = $request->validate([
             'limit' => 'nullable|integer|min:1|max:1000',
+            'tags'  => 'nullable|array',
         ]);
 
         $limit = $data['limit'] ?? 100;
 
-        $notes = KeyNote::where('user_id', $request->user()->id)
-            ->latest()
+        $query = KeyNote::where('user_id', $request->user()->id);
+
+        if (!empty($data['tags'])) {
+            $query->where(function ($q) use ($data) {
+                foreach ($data['tags'] as $tag) {
+                    $q->orWhereJsonContains('tags', trim(strtolower($tag)));
+                }
+            });
+        }
+
+        $notes = $query->latest()
             ->limit($limit)
-            ->get(['id', 'key', 'title', 'content', 'created_at']);
+            ->get(['id', 'key', 'title', 'content', 'tags', 'created_at']);
 
         return Response::text(json_encode([
             'limit_requested' => $limit,
@@ -36,6 +46,7 @@ class GetLastKeyNotesTool extends Tool
                 'key'        => $n->key,
                 'title'      => $n->title,
                 'content'    => $n->content,
+                'tags'       => $n->tags,
                 'created_at' => $n->created_at->toISOString(),
             ])->values(),
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
@@ -45,7 +56,10 @@ class GetLastKeyNotesTool extends Tool
     {
         return [
             'limit' => $schema->integer()
-                ->description('Maximum number of key notes to return. Defaults to 100.')
+                ->description('Maximum number of key notes to return. Defaults to 100.'),
+            'tags' => $schema->array()
+                ->items($schema->string())
+                ->description('Filter by specific tags (optional). Returns key notes that have at least one of these tags.'),
         ];
     }
 }

@@ -19,14 +19,24 @@ class GetRecentNotesTool extends Tool
     {
         $data = $request->validate([
             'days' => 'nullable|integer|min:1|max:365',
+            'tags' => 'nullable|array',
         ]);
 
         $days = $data['days'] ?? 6;
 
-        $notes = Note::where('user_id', $request->user()->id)
-            ->where('created_at', '>=', now()->subDays($days)->startOfDay())
-            ->latest()
-            ->get(['id', 'title', 'content', 'created_at']);
+        $query = Note::where('user_id', $request->user()->id)
+            ->where('created_at', '>=', now()->subDays($days)->startOfDay());
+
+        if (!empty($data['tags'])) {
+            $query->where(function ($q) use ($data) {
+                foreach ($data['tags'] as $tag) {
+                    $q->orWhereJsonContains('tags', trim(strtolower($tag)));
+                }
+            });
+        }
+
+        $notes = $query->latest()
+            ->get(['id', 'title', 'content', 'tags', 'created_at']);
 
         return Response::text(json_encode([
             'days_requested' => $days,
@@ -35,6 +45,7 @@ class GetRecentNotesTool extends Tool
                 'id'         => $n->id,
                 'title'      => $n->title,
                 'content'    => $n->content,
+                'tags'       => $n->tags,
                 'created_at' => $n->created_at->toISOString(),
             ])->values(),
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
@@ -44,7 +55,10 @@ class GetRecentNotesTool extends Tool
     {
         return [
             'days' => $schema->integer()
-                ->description('Number of days to look back. Defaults to 6.')
+                ->description('Number of days to look back. Defaults to 6.'),
+            'tags' => $schema->array()
+                ->items($schema->string())
+                ->description('Filter by specific tags (optional). Returns notes that have at least one of these tags.'),
         ];
     }
 }
