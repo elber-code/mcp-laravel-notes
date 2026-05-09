@@ -25,22 +25,31 @@ Standard notes that represent chronological entries, like a daily journal or seq
 - **Fields:** `title` (optional), `content`, `created_at`.
 - **Querying:** Based on creation date (`created_at`).
 - **MCP Tools:**
-  - `create-note`: Creates a new timeline note. Supports optional `tags` array.
-  - `edit-note`: Edits a note using its numerical `id`. Supports optional `tags` array.
+  - `create-note`: Creates a new timeline note.
+  - `edit-note`: Edits a note using its numerical `id`.
   - `get-recent-notes`: Returns notes from the last X days.
   - `get-month-notes`: Returns notes created in a specific month.
   - `get-all-tags`: Returns a list of all unique tags used in the system.
-
+- **MCP Resources:**
+  - `timeline://recent/{days}`: Dynamic access to the most recent timeline notes.
 
 ### 2. Key Notes (`KeyNote` model)
 Specialized notes identified by a unique string key. Useful for storing preferences, assistant memory, or settings.
 - **Fields:** `key` (unique per user), `title` (optional), `content`, `created_at`.
 - **Querying:** Based on the string `key` or by latest created.
 - **MCP Tools:**
-  - `create-key-note`: Creates a new note with a specific `key`. Supports optional `tags` array.
-  - `edit-key-note`: Edits an existing note referencing its `key`. Supports optional `tags` array.
+  - `create-key-note`: Creates a new note with a specific `key`.
+  - `edit-key-note`: Edits an existing note referencing its `key`.
   - `get-memory`: Shortcut tool to fetch the note with the key `'memory'`.
   - `get-last-key-notes`: Retrieves the latest X key notes created.
+- **MCP Resources:**
+  - `memory://core`: Direct access to the user's memory note.
+  - `tags://all`: Global list of tags for categorization.
+
+### 3. Workflows (Prompts)
+The server now includes prompt templates to guide the AI in complex tasks:
+- **`Summarize Timeline`**: Instructs the AI to read recent timeline notes and update the user's structured memory.
+
 
 ### 🏷️ Tagging System
 Both note types support a tagging system. Tags are stored as a JSON array in the database and are automatically indexed for searching.
@@ -133,13 +142,50 @@ If your AI client uses a configuration file (like `claude_desktop_config.json`),
 ```
 *(Note: Since this is an HTTP API protected by Sanctum, using a proxy adapter like `supergateway` is usually required for desktop clients that only support local command execution).*
 
-## 🛠 Testing with Inspector
+## 🛠 Testing & Debugging
 
-You can also test the MCP tools visually using the MCP Inspector:
+### Unit Tests
+The MCP tools, resources, and prompts have automated PHPUnit tests. Run them with:
 ```bash
-npx @modelcontextprotocol/inspector
+php artisan test tests/Feature/Mcp/
 ```
-*Note: In the inspector, set the URL to `http://127.0.0.1:8000/api/mcp/notes` and add the custom `Authorization` header with your generated Bearer token.*
+
+The test suite uses `RefreshDatabase` and Laravel's built-in MCP test helpers via static calls on the server class:
+```php
+NotesServer::actingAs($user)->resource(MemoryResource::class)->assertOk();
+NotesServer::actingAs($user)->prompt(SummarizeTimelinePrompt::class, ['days' => '7'])->assertSee('memory');
+```
+
+### Interactive Inspector
+To test the MCP server's tools, resources, and prompts interactively:
+
+#### 1. Start the Laravel Server
+```bash
+php artisan serve
+```
+
+#### 2. Generate an Access Token
+Since the server is protected by Sanctum, you need a Bearer token:
+```bash
+php artisan tinker --execute="echo App\Models\User::first()->createToken('mcp-test')->plainTextToken;"
+```
+
+#### 3. Use the MCP Inspector
+There are two ways to open the inspector:
+
+**Option A: Built-in Inspector (Recommended)**
+```bash
+# The 'handle' is typically the last part of the route (in this case 'notes')
+php artisan mcp:inspector notes
+```
+
+**Option B: Official Inspector (npx)**
+```bash
+npx @modelcontextprotocol/inspector http://127.0.0.1:8000/api/mcp/notes
+```
+
+*Note: Once the inspector is open, make sure to add the `Authorization` header with the value `Bearer <your_token>` in the connection settings.*
+
 
 ## 🎙️ Mac Shortcuts Integration (Voice Notes)
 

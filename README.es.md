@@ -24,6 +24,9 @@ Notas estándar que representan entradas cronológicas, como un diario o un regi
   - `edit-note`: Edita una nota usando su `id` numérico.
   - `get-recent-notes`: Devuelve las notas de los últimos X días.
   - `get-month-notes`: Devuelve las notas creadas en un mes específico.
+  - `get-all-tags`: Devuelve la lista de todas las etiquetas únicas del usuario.
+- **Recursos MCP:**
+  - `timeline://recent/{days}`: Acceso dinámico a las notas más recientes.
 
 ### 2. Notas con Clave (`KeyNote` model)
 Notas especializadas identificadas por un "key" (clave) de texto único. Útiles para guardar preferencias, memoria del asistente o configuraciones.
@@ -34,6 +37,14 @@ Notas especializadas identificadas por un "key" (clave) de texto único. Útiles
   - `edit-key-note`: Edita una nota existente referenciando su `key`.
   - `get-memory`: Herramienta de acceso directo para obtener la nota con el key `'memory'`.
   - `get-last-key-notes`: Recupera las últimas X notas con clave creadas.
+- **Recursos MCP:**
+  - `memory://core`: Acceso directo a la nota de memoria del usuario.
+  - `tags://all`: Lista global de etiquetas para categorización.
+
+### 3. Flujos de Trabajo (Prompts)
+El servidor ahora incluye plantillas de prompts para guiar a la IA en tareas complejas:
+- **`Summarize Timeline`**: Instruye a la IA para que lea las notas recientes de la línea de tiempo y actualice la memoria estructurada del usuario.
+
 
 ## 🔐 Autenticación
 
@@ -49,8 +60,6 @@ Este token identifica automáticamente al usuario, garantizando que todas las no
 
 Para decisiones de arquitectura, peculiaridades de Livewire 3 y resolución de problemas comunes (como el manejo de eventos en slots o modales), consulta la carpeta `docs/`:
 - [Notas Técnicas y Troubleshooting](docs/technical-notes.es.md)
-
-## Requisitos Previos e instala las dependencias:
 
 ## 🚀 Empezando
 
@@ -120,13 +129,50 @@ Si tu cliente de IA utiliza un archivo de configuración (como `claude_desktop_c
 ```
 *(Nota: Dado que esta es una API HTTP protegida por Sanctum, generalmente se requiere usar un adaptador proxy como `supergateway` para los clientes de escritorio que solo admiten la ejecución de comandos locales).*
 
-## 🛠 Pruebas con el Inspector
+## 🛠 Pruebas y Depuración (Testing)
 
-También puedes probar las herramientas MCP visualmente usando el Inspector MCP:
+### Tests Unitarios
+Las herramientas, recursos y prompts MCP tienen tests PHPUnit automatizados. Ejecútalos con:
 ```bash
-npx @modelcontextprotocol/inspector
+php artisan test tests/Feature/Mcp/
 ```
-*Nota: En el inspector, configura la URL como `http://127.0.0.1:8000/api/mcp/notes` y añade el header personalizado `Authorization` con tu token Bearer generado.*
+
+El test suite usa `RefreshDatabase` y los helpers de testing de Laravel MCP via llamadas estáticas en la clase del servidor:
+```php
+NotesServer::actingAs($user)->resource(MemoryResource::class)->assertOk();
+NotesServer::actingAs($user)->prompt(SummarizeTimelinePrompt::class, ['days' => '7'])->assertSee('memory');
+```
+
+### Inspector Interactivo
+Para probar las herramientas, recursos y prompts del servidor MCP de forma interactiva:
+
+#### 1. Inicia el servidor de Laravel
+```bash
+php artisan serve
+```
+
+#### 2. Genera un Token de acceso
+Como el servidor está protegido por Sanctum, necesitas un token Bearer:
+```bash
+php artisan tinker --execute="echo App\Models\User::first()->createToken('mcp-test')->plainTextToken;"
+```
+
+#### 3. Usa el Inspector MCP
+Tienes dos formas de abrir el inspector:
+
+**Opción A: Inspector integrado (Recomendado)**
+```bash
+# El 'handle' suele ser la última parte de la ruta (en este caso 'notes')
+php artisan mcp:inspector notes
+```
+
+**Opción B: Inspector oficial (npx)**
+```bash
+npx @modelcontextprotocol/inspector http://127.0.0.1:8000/api/mcp/notes
+```
+
+*Nota: Una vez abierto el inspector, asegúrate de añadir el header `Authorization` con el valor `Bearer <tu_token>` en la configuración de la conexión.*
+
 
 ## 🎙️ Integración con Atajos de Mac (Grabar Notas de Voz)
 
