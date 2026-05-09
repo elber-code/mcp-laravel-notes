@@ -38,18 +38,16 @@ class GetLastKeyNotesTool extends Tool
             ->limit($limit)
             ->get(['id', 'key', 'title', 'content', 'tags', 'created_at']);
 
-        return Response::text(json_encode([
-            'limit_requested' => $limit,
-            'total_found'     => $notes->count(),
-            'notes'           => $notes->map(fn ($n) => [
-                'id'         => $n->id,
+        return Response::json([
+            'total' => $notes->count(),
+            'notes' => $notes->map(fn ($n) => [
                 'key'        => $n->key,
                 'title'      => $n->title,
                 'content'    => $n->content,
                 'tags'       => $n->tags,
                 'created_at' => $n->created_at->toISOString(),
             ])->values(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
     public function schema(JsonSchema $schema): array

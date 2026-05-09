@@ -42,13 +42,10 @@ class EditMemoryTool extends Tool
             ]);
         }
 
-        return Response::text(json_encode([
-            'id'         => $note->id,
+        return Response::json([
             'key'        => $note->key,
-            'title'      => $note->title,
-            'content'    => $note->content,
             'updated_at' => $note->updated_at->toISOString(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
     public function schema(JsonSchema $schema): array

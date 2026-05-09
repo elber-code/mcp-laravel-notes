@@ -38,17 +38,17 @@ class GetRecentNotesTool extends Tool
         $notes = $query->latest()
             ->get(['id', 'title', 'content', 'tags', 'created_at']);
 
-        return Response::text(json_encode([
-            'days_requested' => $days,
-            'total_found'    => $notes->count(),
-            'notes'          => $notes->map(fn ($n) => [
+        return Response::json([
+            'days'  => $days,
+            'total' => $notes->count(),
+            'notes' => $notes->map(fn ($n) => [
                 'id'         => $n->id,
                 'title'      => $n->title,
                 'content'    => $n->content,
                 'tags'       => $n->tags,
                 'created_at' => $n->created_at->toISOString(),
             ])->values(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
     public function schema(JsonSchema $schema): array

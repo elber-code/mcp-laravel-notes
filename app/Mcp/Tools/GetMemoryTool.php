@@ -25,16 +25,15 @@ class GetMemoryTool extends Tool
             return Response::error("Memory note not found. The user does not have a note with key 'memory'.");
         }
 
-        return Response::text(json_encode([
-            'id'         => $note->id,
+        return Response::json([
             'key'        => $note->key,
             'title'      => $note->title,
             'content'    => $note->content,
             'updated_at' => $note->updated_at->toISOString(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
-    public function schema(JsonSchema $schema): array
+    public function schema(JsonSchema $_schema): array
     {
         return [];
     }

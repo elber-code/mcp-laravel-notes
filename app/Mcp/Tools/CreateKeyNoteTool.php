@@ -52,13 +52,11 @@ class CreateKeyNoteTool extends Tool
             'tags'    => $tags,
         ]);
 
-        return Response::text(json_encode([
-            'id'         => $note->id,
+        return Response::json([
             'key'        => $note->key,
             'title'      => $note->title,
-            'content'    => $note->content,
             'created_at' => $note->created_at->toISOString(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
     public function schema(JsonSchema $schema): array

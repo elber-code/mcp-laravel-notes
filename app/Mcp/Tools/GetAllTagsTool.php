@@ -22,14 +22,11 @@ class GetAllTagsTool extends Tool
             ->pluck('name')
             ->toArray();
 
-        return Response::text(json_encode([
-            'tags' => $tags,
-            'count' => count($tags)
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        return Response::json(['tags' => $tags]);
     }
 
-    public function schema(JsonSchema $schema): array
+    public function schema(JsonSchema $_schema): array
     {
-        return []; // No input parameters required
+        return [];
     }
 }

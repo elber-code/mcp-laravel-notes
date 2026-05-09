@@ -56,12 +56,11 @@ class EditNoteTool extends Tool
 
         $note->update($updateData);
 
-        return Response::text(json_encode([
+        return Response::json([
             'id'         => $note->id,
             'title'      => $note->title,
-            'content'    => $note->content,
             'updated_at' => $note->updated_at->toISOString(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
     public function schema(JsonSchema $schema): array

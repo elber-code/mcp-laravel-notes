@@ -49,12 +49,11 @@ class CreateNoteTool extends Tool
             'tags'    => $tags,
         ]);
 
-        return Response::text(json_encode([
+        return Response::json([
             'id'         => $note->id,
             'title'      => $note->title,
-            'content'    => $note->content,
             'created_at' => $note->created_at->toISOString(),
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        ]);
     }
 
     public function schema(JsonSchema $schema): array
